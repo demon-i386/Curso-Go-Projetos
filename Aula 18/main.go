@@ -9,7 +9,7 @@ func main() {
 	var num int
 
 	fmt.Println("Seja bem vindo!")
-	// Aqui eu crio uma Função Anonima
+	// Aqui eu crio uma Função Anonima (Closure)
 	defer func() {
 		// Eu crio uma variável chamada 'ex' e coloco o valor que o recover tiver dentro dela. Caso não seja nil ele executa.
 		if ex := recover(); ex != nil {
