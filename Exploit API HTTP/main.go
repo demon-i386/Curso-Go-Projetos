@@ -1,0 +1,68 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
+)
+
+type ExploitApiJson []struct {
+	ID   string `json:"id"`
+	Date string `json:"date"`
+	Name string `json:"name"`
+}
+
+func main() {
+	var exploitName string
+
+	Banner()
+
+	if len(os.Args) <= 1 {
+		fmt.Print("Enter the name of the Exploit or Framework (Web): ")
+		fmt.Scanf("%s", &exploitName)
+	} else {
+		exploitName = os.Args[1]
+	}
+
+	request, err := http.Get("https://www.exploitalert.com/api/search-exploit?name=" + exploitName)
+	defer request.Body.Close()
+
+	if err != nil {
+		fmt.Printf("An error has occurred: %s", err)
+		return
+	}
+
+	var jsn ExploitApiJson
+
+	json.NewDecoder(request.Body).Decode(&jsn)
+
+	if len(jsn) <= 0 {
+		fmt.Println("\n\033[1;31m—\033[0;0m I didn't find any exploit with that name.\n")
+		return
+	}
+
+	fmt.Printf("I found the following Exploit's: \033[1;35m%d\033[0;0m\n", len(jsn))
+
+	for i := 0; i < len(jsn); i++ {
+		if i < 20 {
+			fmt.Printf("— \033[1;35mID:\033[0;0m %s \033[1;35mDate:\033[0;0m %s \033[1;35mName:\033[0;0m %s\n", jsn[i].ID, jsn[i].Date, jsn[i].Name)
+		} else {
+			break
+		}
+	}
+}
+
+func Banner() {
+	fmt.Print("\033[1;96m")
+	fmt.Println(`—————————————————————————————————————————————————————————————————————————————
+ ██████╗  ██████╗       ███████╗██╗  ██╗██████╗ ██╗      ██████╗ ██╗████████╗
+██╔════╝ ██╔═══██╗      ██╔════╝╚██╗██╔╝██╔══██╗██║     ██╔═══██╗██║╚══██╔══╝
+██║  ███╗██║   ██║█████╗█████╗   ╚███╔╝ ██████╔╝██║     ██║   ██║██║   ██║   
+██║   ██║██║   ██║╚════╝██╔══╝   ██╔██╗ ██╔═══╝ ██║     ██║   ██║██║   ██║   
+╚██████╔╝╚██████╔╝      ███████╗██╔╝ ██╗██║     ███████╗╚██████╔╝██║   ██║   
+ ╚═════╝  ╚═════╝       ╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝ ╚═════╝ ╚═╝   ╚═╝   																		 
+		By: www.github.com/blkzy — Version: 1.0
+—————————————————————————————————————————————————————————————————————————————`)
+	fmt.Print("\033[0;0m")
+}
