@@ -80,6 +80,28 @@ func Create(database *sql.DB, response http.ResponseWriter, body []byte) (int64,
 	return id, nil
 }
 
+// Delete :: Função para apagar os usuários por ID.
+func Delete(database *sql.DB, response http.ResponseWriter, ID uint64) error {
+	statement, err := database.Prepare("delete from users where id = ?")
+
+	if err != nil {
+		log.Println(err)
+		response.Write([]byte("Erro ao deletar usuário por ID"))
+		return err
+	}
+
+	defer statement.Close()
+	defer database.Close()
+
+	if _, err := statement.Exec(ID); err != nil {
+		log.Println(err)
+		response.Write([]byte("Erro ao deletar usuário!"))
+		return err
+	}
+
+	return nil
+}
+
 // Get :: Está função serve para puxarmos os usuários por ID, e imprimir na tela.
 func Get(database *sql.DB, response http.ResponseWriter, ID uint64) error {
 	var user userJson
@@ -142,6 +164,35 @@ func GetAll(database *sql.DB, response http.ResponseWriter) error {
 	if err := json.NewEncoder(response).Encode(users); err != nil { // Aqui é onde o retorno da request é mostrado. E caso haja algum erro ele é retornado.
 		log.Println(err)
 		response.Write([]byte("Erro ao converter usuários para Json"))
+		return err
+	}
+
+	return nil
+}
+
+// Update :: Está função realiza um update dos dados dos usuários no banco de dados; nome e email.
+func Update(database *sql.DB, response http.ResponseWriter, body []byte, ID uint64) error {
+	var user userJson
+
+	if err := json.Unmarshal(body, &user); err != nil {
+		log.Println(err)
+		response.Write([]byte("Erro ao converter usuários para Json"))
+		return err
+	}
+
+	statement, err := database.Prepare("update users set name = ?, email = ? where id = ?")
+	if err != nil {
+		log.Println(err)
+		response.Write([]byte("Erro ao preparar query"))
+		return err
+	}
+
+	defer statement.Close()
+	defer database.Close()
+
+	if _, err := statement.Exec(user.Name, user.Email, ID); err != nil {
+		log.Println(err)
+		response.Write([]byte("Erro ao realizar update"))
 		return err
 	}
 

@@ -9,7 +9,7 @@ import (
 	"github.com/blkzy/Curso-Go-Projetos/Database/2-CRUD/database"
 )
 
-// CreateHTTP :: Está função é a função base que é chamada quando há uma request no "/api/v1/user" (Método POST).
+// CreateHTTP :: Está função é chamada quando há uma request no "/api/v1/user" (Método POST).
 func CreateHTTP(response http.ResponseWriter, request *http.Request) {
 	body, err := ioutil.ReadAll(request.Body)
 
