@@ -21,11 +21,11 @@ func main() {
 	var num int
 
 	fmt.Print("Digite um numero: ")
-	fmt.Scanf("%d", &num)
+	fmt.Scanf("%d", &num) // '%d' informa para o Scanf que o que estamos estaneando é um inteiro.
 
 	if num < 0 {
 		fmt.Println("Este é um valor negativo.")
-	} else if num >= 0 && num <= 9 {
+	} else if num >= 0 && num <= 9 { // '&&' seria a mesma coisa que 'and' no Python.
 		fmt.Println("Este é um valor positivo de apenas de um dígito.")
 	} else {
 		fmt.Println("Este é um valor positivo e contém mais de um dígito.")
